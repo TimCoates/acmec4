@@ -2,7 +2,7 @@ views {
   view index {
     title 'Overall view of everything'
     description 'An initial very high level diagram, showing everything.'
-    include acme, acmeLogic, database, anAPIMAPI, anotherAPIMAPI, patientFacingApp, patientUser, NHSlogin, providerSystemF, providerSystemE, clinicalUser1, cis2, consumerSystemD, clinicalUser2, clinicalUser3, webAppXYZ, consumerSystemC, eventManagementSystem, providerSystemB, providerSystemA, MESHService, consumerDataHoover, providerSystemG
+    include acme.**, patientFacingApp, patientUser, NHSlogin, providerSystemF, providerSystemE, clinicalUser1, cis2, consumerSystemD, clinicalUser2, clinicalUser3, webAppXYZ, consumerSystemC, eventManagementSystem, providerSystemB, providerSystemA, MESHService, consumerDataHoover, providerSystemG
   }
 
   view FHIR extends index {

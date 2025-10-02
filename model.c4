@@ -59,7 +59,9 @@ model {
     
     NHSlogin = system 'NHS Login' { style { color sky}}
 
-    patientFacingApp = app 'Patient Facing App'
+    patientFacingApp = app 'Patient Facing App' {
+      style { icon ./NHS_Icon.png }
+    }
 
     patientUser = patient 'Patient User'
 
