@@ -1,0 +1,55 @@
+views {
+  view index {
+    title 'Overall view of everything'
+    description 'An initial very high level diagram, showing everything.'
+    include acme, acmeLogic, database, anAPIMAPI, anotherAPIMAPI, patientFacingApp, patientUser, NHSlogin, providerSystemF, providerSystemE, clinicalUser1, cis2, consumerSystemD, clinicalUser2, clinicalUser3, webAppXYZ, consumerSystemC, eventManagementSystem, providerSystemB, providerSystemA, MESHService, consumerDataHoover, providerSystemG
+  }
+
+  view FHIR extends index {
+    title 'All items, limited to FHIR'
+    description 'Limited to FHIR'
+    exclude element.tag != #FHIR
+  }
+
+  view R4 extends index {
+    title 'All items, limited to FHIR R4'
+    description 'Limited to FHIR R4'
+    exclude element.tag != #R4
+  }
+
+  view ACME of acme {
+    title 'Things directly linked to ACME'
+    description 'Showing only Acme specific stuff'
+    include *
+  }
+
+view ACMEInternals of acme {
+    title 'ACME internals'
+    description 'Showing only Acme internal stuff'
+    include acme, acmeLogic, database, anAPIMAPI, anotherAPIMAPI
+  }
+
+  view MeshView of MESH {
+    title 'Show only things using MESH'
+    description 'MESH only.'
+    include element.tag = #MESH
+  }
+
+  view pat of patientUser {
+    include *
+  }
+
+  view Providers {
+    title 'Providers'
+    description 'Providers only'
+    include element.kind = provider
+  }
+
+  dynamic view systemBEvent {
+    title "Data received from System B"
+    providerSystemB -> acme { line solid }
+    acme -> acme 'Processing' { line solid }
+    acme ->eventManagementSystem 'Event Published' { line solid }
+  }
+
+}

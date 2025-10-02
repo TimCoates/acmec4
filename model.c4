@@ -1,0 +1,175 @@
+specification {
+  element patient {
+    style {
+        shape person
+        color muted
+        multiple true
+    }
+  }
+  element clinician {
+    style {
+        shape person
+        color amber
+        multiple true
+    }
+  }
+
+  element provider {
+    style {
+        shape rectangle
+        color gray
+    }
+  }
+  element consumer {
+    style {
+        shape rectangle
+        color indigo
+    }
+  }
+  element app {
+    style {
+        icon tech:android
+        shape mobile
+        color blue
+    }
+  }
+  element system
+  element container
+  element component
+  tag FHIR
+  tag R4
+  tag STU3
+  tag REST
+  tag Messaging
+  tag ITK
+  tag MESH
+}
+
+model {
+    acme = system 'ACME Service' {
+        database = component 'DynamoDB' {
+            style{
+                shape cylinder
+            }
+        }
+        acmeLogic = component 'Logic in ACME'
+        anAPIMAPI = system 'An APIM API' { #FHIR, #R4 }
+        anotherAPIMAPI = system 'Another APIM API' {}
+    }
+    
+    NHSlogin = system 'NHS Login' { style { color sky}}
+
+    patientFacingApp = app 'Patient Facing App'
+
+    patientUser = patient 'Patient User'
+
+    providerSystemF = provider 'Provider System F' { #FHIR, #STU3 }
+    providerSystemE = provider 'Provider System E' { #FHIR, #R4 }
+
+    clinicalUser1 = clinician 'Clinical User (1)'
+    clinicalUser2 = clinician 'Clinical User (2)'
+    clinicalUser3 = clinician 'Clinical User (3)'
+
+    cis2 = system "CIS2" {
+      style {
+        color sky
+      }
+    }
+    consumerSystemD = consumer 'Consumer System D' { #FHIR, #R4 }
+    webAppXYZ = system "Web App XYZ" {
+        style {
+            shape browser
+        }
+    }
+    consumerSystemC = consumer 'Consumer System C'
+
+    eventManagementSystem = system 'Event Management System'
+
+    providerSystemB = provider 'Provider System B' {
+        #FHIR, #STU3
+    }
+    providerSystemA = provider 'Provider System A' { #MESH }
+
+    MESHService = system 'MESH' {
+        #MESH
+        style { color green }
+        MESHAPI = component 'MESH API' { #MESH style { color green } }
+    }
+
+    consumerDataHoover = system 'Consumer: Data Hoover / Reporting Beast "PDF"' { #MESH }
+
+    providerSystemG = provider 'Provider System G'
+
+    // Relationships
+    acmeLogic -> database {}
+    acmeLogic -> anAPIMAPI { style { line solid } }
+    acmeLogic -> anotherAPIMAPI { style { line solid } }
+    anotherAPIMAPI -> patientFacingApp { style { line solid } }
+    patientUser ->patientFacingApp { style { line solid } }
+
+    patientUser -> NHSlogin 'Authenticates'
+    patientFacingApp -> NHSlogin 'Trusts'
+
+    providerSystemE -> anAPIMAPI 'via messaging based API\n(FHIR R4)' {
+        #FHIR, #R4, #Messaging
+        style { color red }
+    }
+    providerSystemF -> anAPIMAPI 'via RESTful API\n(FHIR STU3)' {
+        #FHIR, #STU3, #REST
+        style { color amber }
+    }
+
+
+
+
+    clinicalUser1 -> providerSystemE
+    clinicalUser1 -> cis2 'Authenticates'
+    providerSystemE -> cis2 'Trusts'
+    clinicalUser2 -> consumerSystemD
+    consumerSystemD -> cis2 'Trusts'
+    clinicalUser2 -> cis2 'Authenticates'
+
+    consumerSystemD ->anAPIMAPI 'via a RESTful API\n(FHIR R4)' {
+        #FHIR, #R4, #REST
+        style {
+            color red
+        }
+    }
+    clinicalUser3 -> webAppXYZ
+    webAppXYZ -> anAPIMAPI 'via API' {
+        style { line solid }
+    }
+    acmeLogic ->consumerSystemC 'via a non-APIM API'
+    acmeLogic -> eventManagementSystem 'publish event'
+    eventManagementSystem -> consumerSystemC 'event notification'
+    consumerSystemC -> eventManagementSystem 'subscribe to event'
+
+    providerSystemB -> acmeLogic 'via ITK3\n(FHIR STU3)' {
+        #ITK, #FHIR, #STU3
+        style { color amber }
+        navigateTo systemBEvent
+    }
+    acmeLogic -> providerSystemB 'via ITK3\n(FHIR STU3)' {
+        #ITK, #FHIR, #STU3
+        style { color amber }
+    }
+    providerSystemA -> MESHAPI 'via MESH' {
+        #MESH
+        style { color green }
+        navigateTo MESHDetail
+    }
+    acmeLogic -> MESHAPI 'via MESH' {
+        #MESH
+        style { color green }
+        navigateTo MESHDetail
+    }
+
+    consumerDataHoover -> MESHAPI 'via MESH' {
+        #MESH
+        style { color green }
+        navigateTo MESHDetail
+    }
+
+    providerSystemG -> acmeLogic 'via an overnight data feed'
+    
+}
