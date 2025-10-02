@@ -2,7 +2,7 @@ views {
   view index {
     title 'Overall view of everything'
     description 'An initial very high level diagram, showing everything.'
-    include acme.**, patientFacingApp, patientUser, NHSlogin, providerSystemF, providerSystemE, clinicalUser1, cis2, consumerSystemD, clinicalUser2, clinicalUser3, webAppXYZ, consumerSystemC, eventManagementSystem, providerSystemB, providerSystemA, MESHService, consumerDataHoover, providerSystemG
+    include acme, patientFacingApp, patientUser, NHSlogin, providerSystemF, providerSystemE, clinicalUser1, cis2, consumerSystemD, clinicalUser2, clinicalUser3, webAppXYZ, consumerSystemC, eventManagementSystem, providerSystemB, providerSystemA, MESHService, consumerDataHoover, providerSystemG
   }
 
   view FHIR extends index {
@@ -46,8 +46,11 @@ view ACMEInternals of acme {
   }
 
   dynamic view systemBEvent {
-    title "Data received from System B"
-    providerSystemB -> acme { line solid }
+    title "On data received from System B handling"
+    providerSystemB -> acme {
+      line solid
+      navigateTo itk3
+    }
     acme -> acme 'Processing' { line solid }
     acme ->eventManagementSystem 'Event Published' { line solid }
   }

@@ -131,7 +131,7 @@ model {
 }
 views{
     dynamic view MESHDetail {
-    title 'Dynamic View Example'
+    title 'MESH mechanism details'
     SenderClient.MESHSender -> MESH.MESHAPI.Outbox.SendMessage 'Sender sends message to MESH\nPOST' { color red line solid }
     MESH.MESHAPI.Outbox.SendMessage -> SenderClient.MESHSender '202 Accepted\nClose connection' {color red line dashed }
 

@@ -88,7 +88,7 @@ model {
     eventManagementSystem = system 'Event Management System'
 
     providerSystemB = provider 'Provider System B' {
-        #FHIR, #STU3
+        #MESH, #FHIR, #STU3
     }
     providerSystemA = provider 'Provider System A' { #MESH }
 
@@ -152,7 +152,7 @@ model {
         navigateTo systemBEvent
     }
     acmeLogic -> providerSystemB 'via ITK3\n(FHIR STU3)' {
-        #ITK, #FHIR, #STU3
+        #MESH, #ITK, #FHIR, #STU3
         style { color amber }
     }
     providerSystemA -> MESHAPI 'via MESH' {

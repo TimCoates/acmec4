@@ -1,0 +1,66 @@
+model {
+    itk3sender = system 'ITK3 Sender' {}
+    itk3recipient = system 'ITK3 Recipient' {}
+    meshsystem = system 'MESH' {
+        style {
+            color green
+        }
+    }
+}
+
+views {
+  dynamic view itk3 {
+    title 'ITK3 flow'
+
+    itk3sender -> meshsystem 'Message is sent to MESH' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3recipient -> meshsystem 'Query for Messages' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3recipient -> meshsystem 'Retrieve Message' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3recipient -> meshsystem 'Send Infrastructure Ack' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3sender -> meshsystem 'Query for Messages' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3sender -> meshsystem 'Retrieve Infrastructure Ack' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+
+    itk3recipient -> itk3recipient 'Validate / Process Message' {
+        line solid
+    }
+
+    itk3recipient -> meshsystem 'Send Business Ack' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3sender -> meshsystem 'Query for Messages' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+    itk3sender -> meshsystem 'Retrieve Business Ack' {
+        navigateTo MESHDetail
+        line solid
+    }
+
+  }
+}
