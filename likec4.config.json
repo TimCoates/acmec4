@@ -1,0 +1,7 @@
+{
+  "$schema": "https://likec4.dev/schemas/config.json",
+  "name": "ACME",
+  "title": "Attempted C4 Diagrams for ACME Service",
+  "projects": [ ]
+}
+ 
