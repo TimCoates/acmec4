@@ -1,8 +1,5 @@
 {
   "$schema": "https://likec4.dev/schemas/config.json",
-  "imageAliases": {
-    "@": "./images",
-  }
   "name": "ACME",
   "title": "Attempted C4 Diagrams for ACME Service",
   "projects": [ ]
