@@ -11,25 +11,25 @@ views {
 	}
 
   view FHIR extends index {
-    title 'All items, limited to FHIR'
+    title 'Filtered / All items, limited to FHIR'
     description 'Limited to FHIR'
     exclude element.tag != #FHIR
   }
 
   view R4 extends index {
-    title 'All items, limited to FHIR R4'
+    title 'Filtered / All items, limited to FHIR R4'
     description 'Limited to FHIR R4'
     exclude element.tag != #R4
   }
 
   view EVENTS extends index {
-    title 'All Event related items'
+    title 'Filtered / All Event related items'
     description 'Limited to FHIR R4'
     exclude element.tag != #EVENT
   }
 
   view MESH of MESHService {
-    title 'All MESH related items'
+    title 'Filtered / All MESH related items'
     description 'Limited to MESH'
     include *
     include element.tag = #MESH

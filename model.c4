@@ -18,17 +18,21 @@ specification {
   }
 
   element provider {
+    notation "Provider System"
     style {
         shape rectangle
         color gray
     }
   }
+
   element consumer {
+    notation "Consumer System"
     style {
         shape rectangle
         color indigo
     }
   }
+  
   element app {
     style {
         icon tech:android
@@ -36,6 +40,7 @@ specification {
         color blue
     }
   }
+
   element system
   element container
   element component
@@ -76,14 +81,14 @@ model {
         anAPIMAPI = system 'An APIM API' {
             #FHIR, #R4
             technology 'Apigee APIM Proxy'
-            icon gcp:api
+            icon gcp:apigee-api-platform
             style {
                 color slate
             }
         }
         anotherAPIMAPI = system 'Another APIM API' {
             technology 'Apigee APIM Proxy'
-            icon gcp:api
+            icon gcp:apigee-api-platform
             style {
                 color slate
             }
@@ -103,9 +108,7 @@ model {
 
     patientFacingApp = app 'Patient Facing App' {
       description 'Patient Facing App on a phone/tablet uses another APIM API to query for data held by ACME, with auth via NHS Login.'
-      style { icon ./NHS_Icon.png }
     }
-
 
     providerSystemF = provider 'Provider System F' {
         #FHIR, #STU3
