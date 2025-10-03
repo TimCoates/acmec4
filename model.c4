@@ -1,5 +1,6 @@
 specification {
   element patient {
+    notation "Person, Citizen, Public"
     style {
         shape person
         color muted
@@ -7,10 +8,12 @@ specification {
     }
   }
   element clinician {
+    notation "Person, Staff, Clinical User"
     style {
         shape person
         color amber
         multiple true
+        icon ./Clinician.png
     }
   }
 
@@ -114,21 +117,9 @@ model {
         description 'Sends data to ACME via a messaging-based ACME API on APIM.\nImplements CIS2 end user authentication.'
     }
 
-    clinicalUser1 = clinician 'Clinical User (1)' {
-        style {
-            icon ./Clinician.png
-        }
-    }
-    clinicalUser2 = clinician 'Clinical User (2)' {
-        style {
-            icon ./Clinician.png
-        }
-    }
-    clinicalUser3 = clinician 'Clinical User (3)' {
-        style {
-            icon ./Clinician.png
-        }
-    }
+    clinicalUser1 = clinician 'Clinical User (1)'
+    clinicalUser2 = clinician 'Clinical User (2)'
+    clinicalUser3 = clinician 'Clinical User (3)'
 
     cis2 = system "CIS2" {
       description 'NHS CIS2 Authentication is a secure authentication service used by health and care professionals in England to access national clinical information systems.'
@@ -219,7 +210,7 @@ model {
 
     clinicalUser1 -> providerSystemE 'Uses' {
         style { line solid }
-        description 'Clinical user 1 authenticates using CIS2'
+        description 'Clinical user 1 uses provider system E, authenticated using CIS2'
         technology 'OAuth2 / OIDC'
     }
     clinicalUser1 -> cis2 'Authenticates' {
@@ -229,7 +220,11 @@ model {
         style { line solid }
         technology 'OAuth2 / OIDC'
     }
-    clinicalUser2 -> consumerSystemD 'Uses'
+    clinicalUser2 -> consumerSystemD 'Uses' {
+        style { line solid }
+        description 'Clinical user 2 uses Consumer System D, authenticated using CIS2'
+        technology 'OAuth2 / OIDC'
+    }
     consumerSystemD -> cis2 'Trusts' {
         style { line solid }
         technology 'OAuth2 / OIDC'
@@ -244,7 +239,7 @@ model {
             color red
         }
     }
-    clinicalUser3 -> webAppXYZ
+    clinicalUser3 -> webAppXYZ 'Uses'
     webAppXYZ -> anAPIMAPI 'via API' {
         style { line solid }
     }
