@@ -51,7 +51,6 @@ view ACMEInternals of acme {
     }
   }
 
-
   view pat of patientUser {
     include *
   }
