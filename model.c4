@@ -114,9 +114,21 @@ model {
         description 'Sends data to ACME via a messaging-based ACME API on APIM.\nImplements CIS2 end user authentication.'
     }
 
-    clinicalUser1 = clinician 'Clinical User (1)'
-    clinicalUser2 = clinician 'Clinical User (2)'
-    clinicalUser3 = clinician 'Clinical User (3)'
+    clinicalUser1 = clinician 'Clinical User (1)' {
+        style {
+            icon ./Clinician.png
+        }
+    }
+    clinicalUser2 = clinician 'Clinical User (2)' {
+        style {
+            icon ./Clinician.png
+        }
+    }
+    clinicalUser3 = clinician 'Clinical User (3)' {
+        style {
+            icon ./Clinician.png
+        }
+    }
 
     cis2 = system "CIS2" {
       description 'NHS CIS2 Authentication is a secure authentication service used by health and care professionals in England to access national clinical information systems.'

@@ -37,13 +37,13 @@ views {
 
   }
   view ACME of acme {
-    title 'Things directly linked to ACME'
+    title 'ACME / Things directly linked to ACME'
     description 'Showing only Acme specific stuff'
     include *
   }
 
 view ACMEInternals of acme {
-    title 'ACME internals'
+    title 'ACME / ACME internals'
     description 'Showing only Acme internal stuff'
     include acme, acmeLogic, database, anAPIMAPI, anotherAPIMAPI
     style acme {
@@ -51,11 +51,6 @@ view ACMEInternals of acme {
     }
   }
 
-  view MeshView of MESH {
-    title 'Show only things using MESH'
-    description 'MESH only.'
-    include element.tag = #MESH
-  }
 
   view pat of patientUser {
     include *
@@ -68,7 +63,7 @@ view ACMEInternals of acme {
   }
 
   dynamic view systemBEvent {
-    title "On data received from System B handling"
+    title "Dynamic Views / On data received from System B handling"
     providerSystemB -> acme {
       line solid
       navigateTo itk3
