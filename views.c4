@@ -1,9 +1,14 @@
 views {
+
   view index {
     title 'Overall view of everything'
     description 'An initial very high level diagram, showing everything.'
+    link https://nhsd-confluence.digital.nhs.uk/spaces/AR/pages/1111202342/Reusable+models+diagrams+-+DRAFT 'Resuable Models'
+    link https://likec4.dev/tutorial/ 'LikeC4 Documentation'
+    link https://architecture.digital.nhs.uk/likec4/#/projects/ 'Published version'
     include acme, patientFacingApp, patientUser, NHSlogin, providerSystemF, providerSystemE, clinicalUser1, cis2, consumerSystemD, clinicalUser2, clinicalUser3, webAppXYZ, consumerSystemC, eventManagementSystem, providerSystemB, providerSystemA, MESHService, consumerDataHoover, providerSystemG
-  }
+  	autoLayout TopBottom 180 213
+	}
 
   view FHIR extends index {
     title 'All items, limited to FHIR'
@@ -17,6 +22,20 @@ views {
     exclude element.tag != #R4
   }
 
+  view EVENTS extends index {
+    title 'All Event related items'
+    description 'Limited to FHIR R4'
+    exclude element.tag != #EVENT
+  }
+
+  view MESH of MESHService {
+    title 'All MESH related items'
+    description 'Limited to MESH'
+    include *
+    include element.tag = #MESH
+    include element.tag = #EVENT
+
+  }
   view ACME of acme {
     title 'Things directly linked to ACME'
     description 'Showing only Acme specific stuff'
@@ -27,6 +46,9 @@ view ACMEInternals of acme {
     title 'ACME internals'
     description 'Showing only Acme internal stuff'
     include acme, acmeLogic, database, anAPIMAPI, anotherAPIMAPI
+    style acme {
+      border solid
+    }
   }
 
   view MeshView of MESH {

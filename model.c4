@@ -43,71 +43,154 @@ specification {
   tag Messaging
   tag ITK
   tag MESH
+  tag EVENT
 }
 
 model {
     acme = system 'ACME Service' {
+        #FHIR, #R4, #EVENT
+        description '''# The ACME Service is a fictional healthcare service.
+        
+        It holds a variety of patient and non-patient identifiable data in a DynamoDB store.
+        
+        Some of this data is manages itself, through various APIs.
+        
+        Some of this data is obtained from other systems, through a variety of APIs and data interfaces.
+        '''
         database = component 'DynamoDB' {
+            technology 'AWS DynamoDB'
+            icon aws:dynamo-db
             style{
                 shape cylinder
             }
         }
-        acmeLogic = component 'Logic in ACME'
-        anAPIMAPI = system 'An APIM API' { #FHIR, #R4 }
-        anotherAPIMAPI = system 'Another APIM API' {}
+        acmeLogic = component 'Logic in ACME' {
+            #EVENT
+            description 'This is the logic that performs processing inside the ACME service'
+            technology 'Python 3.9'
+            icon tech:python
+        }
+        anAPIMAPI = system 'An APIM API' {
+            #FHIR, #R4
+            technology 'Apigee APIM Proxy'
+            icon gcp:api
+            style {
+                color slate
+            }
+        }
+        anotherAPIMAPI = system 'Another APIM API' {
+            technology 'Apigee APIM Proxy'
+            icon gcp:api
+            style {
+                color slate
+            }
+        }
     }
     
-    NHSlogin = system 'NHS Login' { style { color sky}}
-
-    patientFacingApp = app 'Patient Facing App' {
-      style { icon ./NHS_Icon.png }
+    NHSlogin = system 'NHS Login' {
+        description 'NHS login allows you to access a range of health and care websites and apps with one set of login details.'
+        link https://www.nhs.uk/nhs-services/online-services/nhs-login/ 'Service description'
+        style {
+            color sky
+            icon ./NHS_Icon.png
+        }
     }
 
     patientUser = patient 'Patient User'
 
-    providerSystemF = provider 'Provider System F' { #FHIR, #STU3 }
-    providerSystemE = provider 'Provider System E' { #FHIR, #R4 }
+    patientFacingApp = app 'Patient Facing App' {
+      description 'Patient Facing App on a phone/tablet uses another APIM API to query for data held by ACME, with auth via NHS Login.'
+      style { icon ./NHS_Icon.png }
+    }
+
+
+    providerSystemF = provider 'Provider System F' {
+        #FHIR, #STU3
+        description 'Sends data to ACME via a RESTful ACME API on APIM.'
+    }
+
+    providerSystemE = provider 'Provider System E' {
+        #FHIR, #R4, #Messaging
+        description 'Sends data to ACME via a messaging-based ACME API on APIM.\nImplements CIS2 end user authentication.'
+    }
 
     clinicalUser1 = clinician 'Clinical User (1)'
     clinicalUser2 = clinician 'Clinical User (2)'
     clinicalUser3 = clinician 'Clinical User (3)'
 
     cis2 = system "CIS2" {
+      description 'NHS CIS2 Authentication is a secure authentication service used by health and care professionals in England to access national clinical information systems.'
+      link https://digital.nhs.uk/services/care-identity-service/applications-and-services/cis2-authentication 'Service details'
       style {
+        icon ./NHS_Icon.png
         color sky
       }
     }
-    consumerSystemD = consumer 'Consumer System D' { #FHIR, #R4 }
+    consumerSystemD = consumer 'Consumer System D' {
+        #FHIR, #R4, #REST
+        description 'Allows users to view data held in ACME, via a RESTful ACME API on APIM. System D implements CIS2 end user authentication.'
+    }
+
     webAppXYZ = system "Web App XYZ" {
+        #Messaging
+        description 'Allows end-users to view data held in ACME, via a messaging-based ACME API on APIM.'
         style {
             shape browser
         }
     }
-    consumerSystemC = consumer 'Consumer System C'
+    consumerSystemC = consumer 'Consumer System C' {
+        #REST, #EVENT
+        description 'System C is a subscriber to events. On receipt of an event, system C queries for data held in ACME via a RESTful but non-APIM API.'
+    }
 
-    eventManagementSystem = system 'Event Management System'
+    eventManagementSystem = system 'Event Management System' {
+        #EVENT
+        description 'MNS Event Management System'
+    }
 
     providerSystemB = provider 'Provider System B' {
-        #MESH, #FHIR, #STU3
+        #MESH, #FHIR, #STU3, #ITK
+        description 'Provider System B\nSystem B shares data in both directions with ACME via ITK3 posts. On receipt of this data, ACME creates an event in MNS.'
     }
-    providerSystemA = provider 'Provider System A' { #MESH }
+    providerSystemA = provider 'Provider System A' {
+        #MESH
+        description 'Sends data to ACME on an ad-hoc basic via MESH'
+    }
 
     MESHService = system 'MESH' {
         #MESH
-        style { color green }
-        MESHAPI = component 'MESH API' { #MESH style { color green } }
+        description 'Message Exchange for Social Care and Health (MESH) provides the ability to share data directly between health and care organisations and is the nationally recognised mechanism for this method of data sharing.'
+        style {
+            color green
+            icon ./NHS_Icon.png
+        }
+        MESHAPI = component 'MESH API' {
+            #MESH
+            style {
+                color green
+                icon ./NHS_Icon.png
+            }
+        }
     }
 
     consumerDataHoover = system 'Consumer: Data Hoover / Reporting Beast "PDF"' { #MESH }
 
-    providerSystemG = provider 'Provider System G'
+    providerSystemG = provider 'Provider System G' {
+        description 'System G sends data to ACME via a nightly bulk data feed using a bespoke / private interface.'
+    }
 
     // Relationships
-    acmeLogic -> database {}
+    acmeLogic -> database 'Read/Write' {
+        description 'Logic reads and writes to DynamoDB using Python Boto3 SDK'
+    }
     acmeLogic -> anAPIMAPI { style { line solid } }
     acmeLogic -> anotherAPIMAPI { style { line solid } }
-    anotherAPIMAPI -> patientFacingApp { style { line solid } }
-    patientUser ->patientFacingApp { style { line solid } }
+    anotherAPIMAPI -> patientFacingApp 'Gets Acme data for Patient Facing App' {
+        style {
+            line solid
+        }
+    }
+    patientUser ->patientFacingApp 'Uses' { style { line solid } }
 
     patientUser -> NHSlogin 'Authenticates'
     patientFacingApp -> NHSlogin 'Trusts'
@@ -122,14 +205,26 @@ model {
     }
 
 
-
-
-    clinicalUser1 -> providerSystemE
-    clinicalUser1 -> cis2 'Authenticates'
-    providerSystemE -> cis2 'Trusts'
-    clinicalUser2 -> consumerSystemD
-    consumerSystemD -> cis2 'Trusts'
-    clinicalUser2 -> cis2 'Authenticates'
+    clinicalUser1 -> providerSystemE 'Uses' {
+        style { line solid }
+        description 'Clinical user 1 authenticates using CIS2'
+        technology 'OAuth2 / OIDC'
+    }
+    clinicalUser1 -> cis2 'Authenticates' {
+        technology 'OAuth2 / OIDC'
+    }
+    providerSystemE -> cis2 'Trusts' {
+        style { line solid }
+        technology 'OAuth2 / OIDC'
+    }
+    clinicalUser2 -> consumerSystemD 'Uses'
+    consumerSystemD -> cis2 'Trusts' {
+        style { line solid }
+        technology 'OAuth2 / OIDC'
+    }
+    clinicalUser2 -> cis2 'Authenticates' {
+        technology 'OAuth2 / OIDC'
+    }
 
     consumerSystemD ->anAPIMAPI 'via a RESTful API\n(FHIR R4)' {
         #FHIR, #R4, #REST
@@ -141,13 +236,16 @@ model {
     webAppXYZ -> anAPIMAPI 'via API' {
         style { line solid }
     }
-    acmeLogic ->consumerSystemC 'via a non-APIM API'
-    acmeLogic -> eventManagementSystem 'publish event'
-    eventManagementSystem -> consumerSystemC 'event notification'
-    consumerSystemC -> eventManagementSystem 'subscribe to event'
+    acmeLogic ->consumerSystemC 'Via a non-APIM API' { #REST }
+    acmeLogic -> eventManagementSystem 'Publish events' { #EVENT }
+    eventManagementSystem -> consumerSystemC 'Event notification' { #EVENT }
+    consumerSystemC -> eventManagementSystem 'Subscribe to event' { #EVENT }
 
     providerSystemB -> acmeLogic 'via ITK3\n(FHIR STU3)' {
         #ITK, #FHIR, #STU3
+        description 'Provider system B sends data to ACME via ITK3 using FHIR STU3.\n\nACME then sends an event to the Event Management System.'
+        link https://nhsconnect.github.io/ITK3-FHIR-Messaging-Distribution/explore_response_patterns_2.html 'ITK Message Specification'
+        technology 'FHIR STU3 over ITK3 (MESH)'
         style { color amber }
         navigateTo systemBEvent
     }
@@ -157,6 +255,7 @@ model {
     }
     providerSystemA -> MESHAPI 'via MESH' {
         #MESH
+        description 'System A sends data to ACME on an ad-hoc basic via MESH.'
         style { color green }
         navigateTo MESHDetail
     }
