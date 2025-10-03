@@ -57,6 +57,7 @@ specification {
 model {
     acme = system 'ACME Service' {
         #FHIR, #R4, #EVENT
+        title 'Acme Service'
         description '''# The ACME Service is a fictional healthcare service.
         
         It holds a variety of patient and non-patient identifiable data in a DynamoDB store.
